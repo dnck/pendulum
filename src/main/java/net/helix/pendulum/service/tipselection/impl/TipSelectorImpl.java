@@ -8,11 +8,11 @@ import net.helix.pendulum.service.ledger.LedgerService;
 import net.helix.pendulum.service.snapshot.SnapshotProvider;
 import net.helix.pendulum.service.tipselection.*;
 import net.helix.pendulum.storage.Tangle;
-import net.helix.pendulum.utils.collections.interfaces.UnIterableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.InvalidAlgorithmParameterException;
+import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +100,7 @@ public class TipSelectorImpl implements TipSelector {
 
             //preparation
             Hash entryPoint = entryPointSelector.getEntryPoint(depth);
-            UnIterableMap<HashId, Integer> rating = ratingCalculator.calculate(entryPoint);
+            Map<Hash, Integer> rating = ratingCalculator.calculate(entryPoint);
 
             //random walk
             WalkValidator walkValidator = new WalkValidatorImpl(tangle, snapshotProvider, ledgerService, config);
@@ -131,7 +131,7 @@ public class TipSelectorImpl implements TipSelector {
         return RoundViewModel.latest(tangle) != null;
     }
 
-    private void checkReference(HashId reference, UnIterableMap<HashId, Integer> rating)
+    private void checkReference(Hash reference, Map<Hash, Integer> rating)
             throws InvalidAlgorithmParameterException {
         if (!rating.containsKey(reference)) {
             throw new InvalidAlgorithmParameterException(REFERENCE_TRANSACTION_TOO_OLD);
